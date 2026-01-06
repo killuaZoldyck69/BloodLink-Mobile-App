@@ -1,68 +1,61 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:myapp/screens/login_screen.dart';
-import 'package:myapp/screens/register_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:myapp/router/app_router.dart';
 
 void main() {
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(const MyApp());
 }
-
-final GoRouter _router = GoRouter(
-  routes: <RouteBase>[
-    GoRoute(
-      path: '/',
-      builder: (BuildContext context, GoRouterState state) {
-        return const LoginScreen();
-      },
-      routes: <RouteBase>[
-        GoRoute(
-          path: 'register',
-          builder: (BuildContext context, GoRouterState state) {
-            return const RegisterScreen();
-          },
-        ),
-      ],
-    ),
-  ],
-);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: _router,
-      title: 'BloodLink',
-      theme: ThemeData(
-        primaryColor: const Color(0xFFD32F2F),
-        scaffoldBackgroundColor: Colors.white,
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          fillColor: const Color(0xFFF5F5F5),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide.none,
-          ),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFD32F2F),
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 16),
-          ),
-        ),
-        textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(
-            foregroundColor: const Color(0xFFD32F2F),
-          ),
-        ),
-        useMaterial3: true,
+    const Color primarySeedColor = Colors.red;
+
+    final TextTheme appTextTheme = TextTheme(
+      displayLarge: GoogleFonts.oswald(fontSize: 57, fontWeight: FontWeight.bold),
+      titleLarge: GoogleFonts.roboto(fontSize: 22, fontWeight: FontWeight.w500),
+      bodyMedium: GoogleFonts.openSans(fontSize: 14),
+      headlineSmall: GoogleFonts.roboto(fontSize: 24, fontWeight: FontWeight.w400),
+    );
+
+    final ThemeData lightTheme = ThemeData(
+      useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: primarySeedColor,
+        brightness: Brightness.light,
       ),
+      textTheme: appTextTheme,
+      appBarTheme: AppBarTheme(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 0,
+        titleTextStyle: GoogleFonts.oswald(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+      ),
+    );
+
+    final ThemeData darkTheme = ThemeData(
+      useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: primarySeedColor,
+        brightness: Brightness.dark,
+      ),
+      textTheme: appTextTheme,
+      appBarTheme: AppBarTheme(
+        backgroundColor: Colors.grey[900],
+        foregroundColor: Colors.white,
+        elevation: 0,
+        titleTextStyle: GoogleFonts.oswald(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+      ),
+    );
+
+    return MaterialApp.router(
+      title: 'BloodLink',
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: ThemeMode.system,
+      routerConfig: appRouter,
     );
   }
 }

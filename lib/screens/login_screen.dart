@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myapp/widgets/custom_text_field.dart';
 
-class LoginScreen extends ConsumerWidget {
+class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -50,7 +49,7 @@ class LoginScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () => context.go('/home'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFD32F2F),
                   padding: const EdgeInsets.symmetric(vertical: 16),
