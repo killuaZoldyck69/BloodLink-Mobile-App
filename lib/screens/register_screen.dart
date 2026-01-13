@@ -1,18 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myapp/models/user_registration_model.dart';
 import 'package:myapp/widgets/custom_text_field.dart';
+import 'package:myapp/services/auth_service.dart';
 
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _user = UserRegistrationModel();
   DateTime? _selectedDate;
+  bool _isLoading = false;
+  final TextEditingController _addressController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _addressController.text = _user.address;
+  }
+
+  @override
+  void dispose() {
+    _addressController.dispose();
+    super.dispose();
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -33,7 +49,58 @@ class _RegisterScreenState extends State<RegisterScreen> {
     // Simulate fetching GPS coordinates
     setState(() {
       _user.address = '123 Main St, City, State';
+      _addressController.text = _user.address;
     });
+  }
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+    setState(() {
+      _isLoading = true;
+    });
+
+    // Use placeholder coordinates (Dhanmondi, Dhaka) for demo until real GPS is integrated
+    const double lat = 23.7465;
+    const double lng = 90.3760;
+
+    try {
+      final auth = ref.read(authServiceProvider);
+      await auth.signUpUser(
+        email: _user.email,
+        password: _user.password,
+        fullName: _user.fullName,
+        phone: _user.phoneNumber,
+        bloodGroup: _user.bloodGroup,
+        lat: lat,
+        lng: lng,
+      );
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Registered successfully')));
+      // Navigate to home
+      Navigator.of(context).pushReplacementNamed('/home');
+    } catch (e) {
+      final message = e.toString().toLowerCase();
+      if (message.contains('already') ||
+          message.contains('duplicate') ||
+          message.contains('23505')) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Email already taken')));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Registration failed: ${e.toString()}')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -53,22 +120,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const CustomTextField(labelText: 'Full Name'),
+              CustomTextField(
+                labelText: 'Full Name',
+                onChanged: (v) => _user.fullName = v,
+                validator: (v) => v == null || v.isEmpty
+                    ? 'Please enter your full name'
+                    : null,
+              ),
               const SizedBox(height: 20),
-              const CustomTextField(
+              CustomTextField(
                 labelText: 'Email Address',
                 keyboardType: TextInputType.emailAddress,
+                onChanged: (v) => _user.email = v,
+                validator: (v) => v == null || !v.contains('@')
+                    ? 'Enter a valid email'
+                    : null,
               ),
               const SizedBox(height: 20),
-              const CustomTextField(
+              CustomTextField(
                 labelText: 'Phone Number',
                 keyboardType: TextInputType.phone,
+                onChanged: (v) => _user.phoneNumber = v,
+                validator: (v) =>
+                    v == null || v.isEmpty ? 'Enter a phone number' : null,
               ),
               const SizedBox(height: 20),
-              const CustomTextField(labelText: 'Password', obscureText: true),
+              CustomTextField(
+                labelText: 'Password',
+                obscureText: true,
+                onChanged: (v) => _user.password = v,
+                validator: (v) => v == null || v.length < 6
+                    ? 'Password must be at least 6 characters'
+                    : null,
+              ),
               const SizedBox(height: 20),
               TextFormField(
-                initialValue: _user.address,
+                controller: _addressController,
+                onChanged: (v) => _user.address = v,
                 decoration: InputDecoration(
                   labelText: 'Current Address',
                   suffixIcon: IconButton(
@@ -129,11 +217,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 40),
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    // Process data
-                  }
-                },
+                onPressed: _isLoading ? null : _submit,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -142,7 +226,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     borderRadius: BorderRadius.circular(100),
                   ),
                 ),
-                child: const Text('Register'),
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 22,
+                        width: 22,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Text('Register'),
               ),
             ],
           ),

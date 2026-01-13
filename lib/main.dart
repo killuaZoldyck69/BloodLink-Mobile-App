@@ -2,8 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/router/app_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' hide Provider;
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Initialize Supabase (replace the placeholders with your real keys)
+  await Supabase.initialize(
+    url: 'https://darcwfgciwzzpmgtaild.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhcmN3ZmdjaXd6enBtZ3RhaWxkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzMDk3MTMsImV4cCI6MjA4Mzg4NTcxM30.B0c8njA4B9caDGCoWLQ6iskbDC3UPC8bCXUbx0BPL_s',
+  );
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -55,7 +63,6 @@ class MyApp extends StatelessWidget {
       colorScheme: ColorScheme.light(
         primary: kPrimaryRed,
         onPrimary: kWhite,
-        background: kBackground,
         surface: kWhite,
         onSurface: kDarkSlate,
         secondary: kBlueGrey,
@@ -139,7 +146,6 @@ class MyApp extends StatelessWidget {
         primary: kPrimaryRed,
         onPrimary: kWhite,
         secondary: kBlueGrey,
-        background: const Color(0xFF0F1724),
         surface: const Color(0xFF111827),
         onSurface: Colors.white,
       ),
