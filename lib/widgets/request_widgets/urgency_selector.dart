@@ -1,10 +1,11 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum UrgencyLevel { Standard, Urgent, Critical }
 
-final selectedUrgencyProvider = StateProvider<UrgencyLevel>((ref) => UrgencyLevel.Standard);
+final selectedUrgencyProvider = StateProvider<UrgencyLevel>(
+  (ref) => UrgencyLevel.Standard,
+);
 
 class UrgencySelector extends ConsumerWidget {
   const UrgencySelector({super.key});
@@ -14,19 +15,21 @@ class UrgencySelector extends ConsumerWidget {
     final selectedUrgency = ref.watch(selectedUrgencyProvider);
 
     Color getChipColor(UrgencyLevel level) {
+      final scheme = Theme.of(context).colorScheme;
       switch (level) {
         case UrgencyLevel.Standard:
-          return Colors.green;
+          return const Color(0xFF10B981); // green-500 (informational)
         case UrgencyLevel.Urgent:
-          return Colors.orange;
+          return const Color(0xFFF97316); // orange-500
         case UrgencyLevel.Critical:
-          return const Color(0xFFD32F2F);
+          return scheme.primary; // Medical Red
       }
     }
 
     Border? getChipBorder(UrgencyLevel level) {
+      final scheme = Theme.of(context).colorScheme;
       if (level == UrgencyLevel.Critical && level == selectedUrgency) {
-        return Border.all(color: Colors.red.shade900, width: 2.0);
+        return Border.all(color: scheme.primary, width: 2.0);
       }
       return null;
     }
@@ -42,14 +45,19 @@ class UrgencySelector extends ConsumerWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             decoration: BoxDecoration(
-              color: isSelected ? getChipColor(level) : getChipColor(level).withOpacity(0.1),
+              color: isSelected
+                  ? getChipColor(level)
+                  : getChipColor(level).withOpacity(0.1),
               borderRadius: BorderRadius.circular(20),
               border: getChipBorder(level),
             ),
             child: Text(
               level.toString().split('.').last,
               style: TextStyle(
-                color: isSelected ? Colors.white : Colors.black87,
+                color: isSelected
+                    ? Colors.white
+                    : Theme.of(context).textTheme.bodyMedium?.color ??
+                          Theme.of(context).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
               ),
             ),

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/request_widgets/blood_group_chips.dart';
@@ -35,8 +34,8 @@ class CreateRequestScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Request Blood'),
-        backgroundColor: Colors.white,
-        elevation: 1,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        elevation: Theme.of(context).appBarTheme.elevation ?? 0,
       ),
       body: Form(
         key: formKey,
@@ -45,18 +44,31 @@ class CreateRequestScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Patient Details', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const Text(
+                'Patient Details',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 16),
               TextFormField(
-                decoration: const InputDecoration(labelText: 'Patient Name', border: OutlineInputBorder()),
-                validator: (value) => value!.isEmpty ? 'Please enter patient name' : null,
+                decoration: const InputDecoration(
+                  labelText: 'Patient Name',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) =>
+                    value!.isEmpty ? 'Please enter patient name' : null,
               ),
               const SizedBox(height: 24),
-              const Text('Blood Group', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+              const Text(
+                'Blood Group',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
               const SizedBox(height: 8),
               const BloodGroupChips(),
               const SizedBox(height: 24),
-              const Text('Units Required', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+              const Text(
+                'Units Required',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
               const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -69,9 +81,19 @@ class CreateRequestScreen extends ConsumerWidget {
                       }
                     },
                   ),
-                  Text('$units', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                  Text(
+                    '$units',
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   IconButton(
-                    icon: const Icon(Icons.add_circle_outline, size: 30, color: Color(0xFFD32F2F)),
+                    icon: Icon(
+                      Icons.add_circle_outline,
+                      size: 30,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                     onPressed: () {
                       ref.read(unitsRequiredProvider.notifier).state++;
                     },
@@ -81,17 +103,27 @@ class CreateRequestScreen extends ConsumerWidget {
               const SizedBox(height: 24),
               const Divider(),
               const SizedBox(height: 16),
-              const Text('Urgency Level', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const Text(
+                'Urgency Level',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 16),
               const UrgencySelector(),
               const SizedBox(height: 24),
               const Divider(),
               const SizedBox(height: 16),
-              const Text('Location & Contact', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const Text(
+                'Location & Contact',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 16),
               TextFormField(
-                decoration: const InputDecoration(labelText: 'Hospital Name', border: OutlineInputBorder()),
-                 validator: (value) => value!.isEmpty ? 'Please enter hospital name' : null,
+                decoration: const InputDecoration(
+                  labelText: 'Hospital Name',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) =>
+                    value!.isEmpty ? 'Please enter hospital name' : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -103,18 +135,25 @@ class CreateRequestScreen extends ConsumerWidget {
                     onPressed: () {
                       // Mock function
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Fetching current location... (mock)')),
+                        const SnackBar(
+                          content: Text('Fetching current location... (mock)'),
+                        ),
                       );
                     },
                   ),
                 ),
-                validator: (value) => value!.isEmpty ? 'Please enter location' : null,
+                validator: (value) =>
+                    value!.isEmpty ? 'Please enter location' : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 keyboardType: TextInputType.phone,
-                decoration: const InputDecoration(labelText: 'Contact Number', border: OutlineInputBorder()),
-                validator: (value) => value!.isEmpty ? 'Please enter a contact number' : null,
+                decoration: const InputDecoration(
+                  labelText: 'Contact Number',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) =>
+                    value!.isEmpty ? 'Please enter a contact number' : null,
               ),
             ],
           ),
@@ -128,16 +167,17 @@ class CreateRequestScreen extends ConsumerWidget {
               : ElevatedButton(
                   onPressed: submitForm,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFD32F2F),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    minimumSize: const Size(double.infinity, 56),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(100),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     'POST REQUEST',
-                    style: TextStyle(
-                      color: Colors.white,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimary,
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),

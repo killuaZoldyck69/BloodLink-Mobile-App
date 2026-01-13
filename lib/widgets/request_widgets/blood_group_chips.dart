@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,9 +24,12 @@ class BloodGroupChips extends ConsumerWidget {
               onSelected: (selected) {
                 ref.read(selectedBloodGroupProvider.notifier).state = group;
               },
-              selectedColor: const Color(0xFFD32F2F),
+              selectedColor: Theme.of(context).colorScheme.primary,
               labelStyle: TextStyle(
-                color: isSelected ? Colors.white : Colors.black,
+                color: isSelected
+                    ? Colors.white
+                    : Theme.of(context).textTheme.bodyMedium?.color ??
+                          Theme.of(context).colorScheme.onSurface,
               ),
               shape: const CircleBorder(),
               padding: const EdgeInsets.all(12),

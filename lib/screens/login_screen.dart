@@ -8,7 +8,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
@@ -16,18 +16,18 @@ class LoginScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Icon(
+              Icon(
                 Icons.bloodtype,
                 size: 100,
-                color: Color(0xFFD32F2F),
+                color: Theme.of(context).colorScheme.primary,
               ),
               const SizedBox(height: 20),
               Text(
                 'Welcome Back',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 40),
               const CustomTextField(
@@ -35,10 +35,7 @@ class LoginScreen extends StatelessWidget {
                 keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 20),
-              const CustomTextField(
-                labelText: 'Password',
-                obscureText: true,
-              ),
+              const CustomTextField(labelText: 'Password', obscureText: true),
               const SizedBox(height: 10),
               Align(
                 alignment: Alignment.centerRight,
@@ -51,10 +48,11 @@ class LoginScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () => context.go('/home'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFD32F2F),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  minimumSize: const Size(double.infinity, 56),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(100),
                   ),
                 ),
                 child: const Text('Login'),
