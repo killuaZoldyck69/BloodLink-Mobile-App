@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:myapp/models/user_registration_model.dart';
 import 'package:myapp/widgets/custom_text_field.dart';
 import 'package:myapp/services/auth_service.dart';
@@ -80,7 +81,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         context,
       ).showSnackBar(const SnackBar(content: Text('Registered successfully')));
       // Navigate to home
-      Navigator.of(context).pushReplacementNamed('/home');
+      context.go('/home');
     } catch (e) {
       final message = e.toString().toLowerCase();
       if (message.contains('already') ||
