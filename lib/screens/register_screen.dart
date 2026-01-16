@@ -74,6 +74,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         bloodGroup: _user.bloodGroup,
         lat: lat,
         lng: lng,
+        lastDonationDate: _user.lastDonationDate,
       );
 
       if (!mounted) return;

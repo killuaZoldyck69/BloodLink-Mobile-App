@@ -12,8 +12,7 @@ class AuthService {
   final SupabaseClient _supabase;
   AuthService(this._supabase);
 
-  /// Signs up a user. Profile data is passed as metadata.
-  /// A database trigger (`handle_new_user`) is expected to create the profile.
+  /// Signs up a user. Profile data is inserted directly into the profiles table.
   Future<void> signUpUser({
     required String email,
     required String password,
@@ -22,38 +21,36 @@ class AuthService {
     String? bloodGroup,
     required double lat,
     required double lng,
+    DateTime? lastDonationDate,
   }) async {
     try {
-      // 1. Sign Up in Auth System, passing profile data in the 'data' field.
-      // This data will be accessible in the database trigger.
-      final res = await _supabase.auth.signUp(
-        email: email,
-        password: password,
-        data: {
-          'full_name': fullName,
-          'phone': phone,
-          'blood_group': bloodGroup,
-          // Pass lat/lng for the trigger to create the location point.
-          'lat': lat,
-          'lng': lng,
-        },
-      );
+      // 1. Sign Up in Auth System
+      final res = await _supabase.auth.signUp(email: email, password: password);
 
       final user = res.user;
       if (user == null) {
         throw Exception(
-            'Sign up successful, but no user object was returned. Please check your email to confirm your account.');
+          'Sign up successful, but no user object was returned. Please check your email to confirm your account.',
+        );
       }
-      
-      // After sign up, the trigger will have done its job.
-      // If we are here, it means the auth part was successful.
-      // The user may need to confirm their email if enabled.
 
+      // 2. Insert profile data directly into the profiles table
+      await _supabase.from('profiles').insert({
+        'id': user.id,
+        'full_name': fullName,
+        'phone_number': phone,
+        'blood_group': bloodGroup,
+        'location': 'POINT($lng $lat)',
+        'last_donation_date': lastDonationDate?.toIso8601String().substring(
+          0,
+          10,
+        ),
+      });
     } on AuthException catch (e) {
       // Handle Supabase Auth errors (e.g. weak password, user exists)
       throw Exception(e.message);
     } on PostgrestException catch (e) {
-      // This shouldn't be reached for sign-up unless there's an issue with the auth call itself.
+      // Handle database errors
       throw Exception('Database Error: ${e.message}');
     } catch (e) {
       throw Exception('Unexpected error: $e');
