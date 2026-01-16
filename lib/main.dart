@@ -8,9 +8,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Initialize Supabase (replace the placeholders with your real keys)
   await Supabase.initialize(
-    url: 'https://darcwfgciwzzpmgtaild.supabase.co',
+    url: 'https://zcaxfisirqelidvrztap.supabase.co',
     anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhcmN3ZmdjaXd6enBtZ3RhaWxkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzMDk3MTMsImV4cCI6MjA4Mzg4NTcxM30.B0c8njA4B9caDGCoWLQ6iskbDC3UPC8bCXUbx0BPL_s',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpjYXhmaXNpcnFlbGlkdnJ6dGFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NjMwODEsImV4cCI6MjA4NDEzOTA4MX0.DMKReFbh4Hde8ZIvyrE7qA6jyFMl8CYwS211ox8jYIs',
   );
   runApp(const ProviderScope(child: MyApp()));
 }
