@@ -27,7 +27,7 @@ class CreateRequestScreen extends ConsumerWidget {
             backgroundColor: Colors.green,
           ),
         );
-        Navigator.of(context).pop();
+        // Removed Navigator.of(context).pop(); to keep on embedded screen
       }
     }
 
